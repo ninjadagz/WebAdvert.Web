@@ -11,7 +11,7 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //Custom piece added for injecting AWS Cognito Identity Provider
+/*            //Custom piece added for injecting AWS Cognito Identity Provider
             //NOTE: Password complexity is currently not validating against AWS, so we're setting it here. You can check it by commenting this out and uncommenting below, to see if it now verifies the code.
             services.AddCognitoIdentity(config=>
             {
@@ -25,7 +25,7 @@
                     RequireUppercase = false
                 };
             });
-
+*/
             //services.AddCognitoIdentity();
             services.AddRazorPages();
         }
@@ -41,7 +41,7 @@
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             //Adding piece for AWS Cognito
-            app.UseAuthentication();
+            //app.UseAuthentication();
 
 
             app.UseRouting();

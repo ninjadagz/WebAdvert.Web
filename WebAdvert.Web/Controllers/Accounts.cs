@@ -48,5 +48,42 @@ namespace WebAdvert.Web.Controllers
             return View();
             
         }
+
+        public async Task<IActionResult> Confirm()
+        {
+            var model = new ConfirmModel();
+            return View(model);
+        }
+
+        [HttpPost]
+        [ActionName("Confirm")]
+        public async Task<IActionResult> Confirm_Post(ConfirmModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user =  await _userManager.FindByEmailAsync(model.Email).ConfigureAwait(false);
+                if (user == null) 
+                {
+                    //User exists. throw error
+                    ModelState.AddModelError("NotFound", "A user with this email address was not found");
+                    return View(model);
+                }
+                var result = await _userManager.ConfirmEmailAsync(user, model.Code).ConfigureAwait(false);
+
+                if (result.Succeeded) 
+                {
+                    RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (var item in result.Errors)
+                    {
+                        ModelState.AddModelError(item.Code, item.Description);
+                    }
+                }
+            }
+
+            return View(model);
+        }
     }
 }
