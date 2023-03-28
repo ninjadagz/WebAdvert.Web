@@ -1,4 +1,5 @@
-﻿using Amazon.Extensions.CognitoAuthentication;
+﻿using Amazon.AspNetCore.Identity.Cognito;
+using Amazon.Extensions.CognitoAuthentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebAdvert.Web.Models.Accounts;
@@ -57,7 +58,7 @@ namespace WebAdvert.Web.Controllers
 
         [HttpPost]
         [ActionName("Confirm")]
-        public async Task<IActionResult> Confirm_Post(ConfirmModel model)
+        public async Task<IActionResult> Confirm(ConfirmModel model)
         {
             if (ModelState.IsValid)
             {
@@ -68,7 +69,8 @@ namespace WebAdvert.Web.Controllers
                     ModelState.AddModelError("NotFound", "A user with this email address was not found");
                     return View(model);
                 }
-                var result = await _userManager.ConfirmEmailAsync(user, model.Code).ConfigureAwait(false);
+                //IdentityResult result = await _userManager.ConfirmEmailAsync(user, model.Code).ConfigureAwait(false);
+                IdentityResult result = await (_userManager as CognitoUserManager<CognitoUser>).ConfirmSignUpAsync(user, model.Code, true).ConfigureAwait(false);
 
                 if (result.Succeeded) 
                 {
